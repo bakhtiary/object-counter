@@ -27,3 +27,14 @@ class ObjectCount:
 class CountResponse:
     current_objects: List[ObjectCount]
     total_objects: List[ObjectCount]
+
+
+@dataclass
+class FoundObject:
+    object_class: str
+    box: Box
+
+
+@dataclass
+class ListResponse:
+    found_objects: List[FoundObject]
