@@ -1,6 +1,6 @@
 import os
 
-from counter.adapters.count_repo import CountMongoDBRepo, CountInMemoryRepo
+from counter.adapters.count_repo import CountInMemoryRepo, CountPostgresRepo
 from counter.adapters.object_detector import TFSObjectDetector, FakeObjectDetector
 from counter.domain.actions import CountDetectedObjects
 from counter.domain.actions import ListDetectedObjects
@@ -13,11 +13,9 @@ def dev_count_action() -> CountDetectedObjects:
 def prod_count_action() -> CountDetectedObjects:
     tfs_host = os.environ.get('TFS_HOST', 'localhost')
     tfs_port = os.environ.get('TFS_PORT', 8501)
-    mongo_host = os.environ.get('MONGO_HOST', 'localhost')
-    mongo_port = os.environ.get('MONGO_PORT', 27017)
-    mongo_db = os.environ.get('MONGO_DB', 'prod_counter')
+    countPostgresDB = get_postgres_db()
     return CountDetectedObjects(TFSObjectDetector(tfs_host, tfs_port, 'rfcn'),
-                                CountMongoDBRepo(host=mongo_host, port=mongo_port, database=mongo_db))
+                                countPostgresDB)
 
 
 def get_count_action() -> CountDetectedObjects:
@@ -40,3 +38,13 @@ def get_list_action() -> ListDetectedObjects:
     env = os.environ.get('ENV', 'dev')
     count_action_fn = f"{env}_list_action"
     return globals()[count_action_fn]()
+
+
+def get_postgres_db():
+    host = os.environ.get('POSTGRES_HOST', 'localhost')
+    port = os.environ.get('POSTGRES_PORT', 5432)
+    db = os.environ.get('POSTGRES_DB', 'count_db')
+    user = os.environ.get('POSTGRES_USER', 'count_user')
+    password = os.environ.get('POSTGRES_PASSWORD', 'notsosecretpassword')
+
+    return CountPostgresRepo(host, port, db, user, password)
