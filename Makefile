@@ -1,6 +1,6 @@
 run_postgres:
 	docker rm -f test-postgres
-	docker run --name test-postgres --rm --net host -e POSTGRES_USER=count_user -e POSTGRES_PASSWORD=notsosecretpassword -e POSTGRES_DB=count_db -d postgres
+	docker run --name test-postgres --rm --net host -e POSTGRES_USER=count_user -e POSTGRES_PASSWORD=notsosecretpassword -e POSTGRES_DB=count_db -v $(shell pwd)/postgres:/docker-entrypoint-initdb.d/ -d postgres
 
 
 lock_pip: requirements.txt
