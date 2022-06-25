@@ -44,20 +44,27 @@ docker run \
 ```
 
 
-## Run mongo 
+## Run Postgres
 
 ```bash
-docker rm -f test-mongo
-docker run --name test-mongo --rm --net host -d mongo:latest
+make run_postgres
 ```
-
 
 ## Setup virtualenv
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.lock.txt
+```
+
+## Add new dependencies
+
+You will need to add direct dependencies to "requirements.txt" then create
+a new requirements.lock.txt using the following command:
+
+```
+make lock_pip
 ```
 
 ## Run the application
@@ -75,10 +82,14 @@ ENV=prod python -m counter.entrypoints.webapp
 
 ## Call the service
 
+There are two endpoints: object-count and object-list
+
 ```shell script
  curl -F "threshold=0.9" -F "file=@resources/images/boy.jpg" http://0.0.0.0:5000/object-count
  curl -F "threshold=0.9" -F "file=@resources/images/cat.jpg" http://0.0.0.0:5000/object-count
  curl -F "threshold=0.9" -F "file=@resources/images/food.jpg" http://0.0.0.0:5000/object-count
+
+ curl -F "threshold=0.9" -F "file=@resources/images/food.jpg" http://0.0.0.0:5000/object-list
 ```
 
 ## Run the tests
