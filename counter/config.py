@@ -1,5 +1,8 @@
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from counter.adapters.count_repo import CountInMemoryRepo, CountPostgresRepo
 from counter.adapters.object_detector import TFSObjectDetector, FakeObjectDetector
 from counter.domain.actions import CountDetectedObjects
